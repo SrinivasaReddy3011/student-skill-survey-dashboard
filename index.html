@@ -42,7 +42,8 @@ button {
 }
 
 canvas {
-    margin-top: 30px;
+    max-width: 90%;
+    margin-top: 20px;
 }
 </style>
 </head>
@@ -77,7 +78,7 @@ canvas {
 </table>
 
 <canvas id="chart" width="300"></canvas>
-
+<canvas id="barChart" width="300"></canvas>
 <script>
 let data = JSON.parse(localStorage.getItem("students")) || [];
 
@@ -137,24 +138,38 @@ function renderTable() {
 let chart;
 
 function renderChart() {
-    let b = data.filter(x=>x.skill==="Beginner").length;
-    let i = data.filter(x=>x.skill==="Intermediate").length;
-    let a = data.filter(x=>x.skill==="Advanced").length;
 
-    if(chart) chart.destroy();
+    let b = data.filter(x => x.skill === "Beginner").length;
+    let i = data.filter(x => x.skill === "Intermediate").length;
+    let a = data.filter(x => x.skill === "Advanced").length;
+
+    // PIE CHART
+    if (chart) chart.destroy();
 
     chart = new Chart(document.getElementById("chart"), {
         type: "pie",
         data: {
-            labels: ["Beginner","Intermediate","Advanced"],
+            labels: ["Beginner", "Intermediate", "Advanced"],
             datasets: [{
-                data: [b,i,a],
-                backgroundColor: ["red","orange","green"]
+                data: [b, i, a],
+                backgroundColor: ["red", "orange", "green"]
+            }]
+        }
+    });
+
+    // BAR CHART
+    new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: {
+            labels: ["Beginner", "Intermediate", "Advanced"],
+            datasets: [{
+                label: "Students",
+                data: [b, i, a],
+                backgroundColor: ["red", "orange", "green"]
             }]
         }
     });
 }
-
 function render() {
     renderTable();
     renderChart();
