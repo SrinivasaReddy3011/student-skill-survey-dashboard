@@ -157,8 +157,6 @@ function render() {
     renderTable();
     renderChart();
 }
-
-render();
 function downloadCSV() {
     let csv = "Name,Section,Skill\n";
 
@@ -187,6 +185,7 @@ function searchData() {
         row.style.display = text.includes(value) ? "" : "none";
     });
 }
+render();
 </script>
 
 </body>
