@@ -164,7 +164,7 @@ function downloadCSV() {
     let csv = "Name,Section,Skill\n";
 
     data.forEach(d => {
-        csv += ${d.name},${d.section},${d.skill}\n;
+        csv += `${d.name},${d.section},${d.skill}\n`;
     });
 
     let blob = new Blob([csv], { type: 'text/csv' });
@@ -175,14 +175,12 @@ function downloadCSV() {
     a.download = "students.csv";
     a.click();
 }
-
 function searchData() {
     let value = document.getElementById("search").value.toLowerCase();
-
     let rows = document.querySelectorAll("#table tr");
 
     rows.forEach((row, index) => {
-        if(index === 0) return;
+        if (index === 0) return;
 
         let text = row.innerText.toLowerCase();
         row.style.display = text.includes(value) ? "" : "none";
