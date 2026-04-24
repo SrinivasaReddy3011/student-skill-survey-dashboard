@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Skill Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; margin:20px; background:#eef2f7; }
+        h1 { text-align:center; }
+
+        input, select, button {
+            padding:8px; margin:5px;
+        }
+
+        table {
+            width:100%; border-collapse:collapse;
+            margin-top:20px; background:white;
+        }
+
+        th, td {
+            border:1px solid #ccc;
+            padding:10px; text-align:center;
+        }
+
+        .beginner { background:#ffdddd; }
+
+        .charts {
+            display:flex;
+            gap:40px;
+            margin-top:30px;
+            flex-wrap:wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📊 Student Skill Dashboard</h1>
+
+<input type="text" id="name" placeholder="Student Name">
+
+<select id="section">
+    <option>A</option>
+    <option>B</option>
+</select>
+
+<select id="skill">
+    <option>Beginner</option>
+    <option>Intermediate</option>
+    <option>Advanced</option>
+</select>
+
+<button onclick="addStudent()">Add</button>
+
+<table id="table"></table>
+
+<div class="charts">
+    <canvas id="pieChart"></canvas>
+    <canvas id="barChart"></canvas>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("students")) || [];
+
+function saveData() {
+    localStorage.setItem("students", JSON.stringify(data));
+}
+
+function addStudent() {
+    let name = document.getElementById("name").value;
+    let section = document.getElementById("section").value;
+    let skill = document.getElementById("skill").value;
+
+    if(name === "") return alert("Enter name");
+
+    data.push({name, section, skill});
+    saveData();
+    render();
+    document.getElementById("name").value = "";
+}
+
+function deleteStudent(index) {
+    data.splice(index,1);
+    saveData();
+    render();
+}
+
+function renderTable() {
+    let table = document.getElementById("table");
+
+    table.innerHTML = `
+    <tr>
+        <th>Name</th>
+        <th>Section</th>
+        <th>Skill</th>
+        <th>Action</th>
+    </tr>`;
+
+    data.forEach((d,i) => {
+        let row = table.insertRow();
+        if(d.skill === "Beginner") row.classList.add("beginner");
+
+        row.insertCell(0).innerText = d.name;
+        row.insertCell(1).innerText = d.section;
+        row.insertCell(2).innerText = d.skill;
+
+        let btn = document.createElement("button");
+        btn.innerText = "Delete";
+        btn.onclick = () => deleteStudent(i);
+
+        row.insertCell(3).appendChild(btn);
+    });
+}
+
+let pie, bar;
+
+function renderCharts() {
+    let b = data.filter(x=>x.skill==="Beginner").length;
+    let i = data.filter(x=>x.skill==="Intermediate").length;
+    let a = data.filter(x=>x.skill==="Advanced").length;
+
+    let secA = data.filter(x=>x.section==="A").length;
+    let secB = data.filter(x=>x.section==="B").length;
+
+    if(pie) pie.destroy();
+    if(bar) bar.destroy();
+
+    pie = new Chart(document.getElementById("pieChart"), {
+        type:"pie",
+        data:{
+            labels:["Beginner","Intermediate","Advanced"],
+            datasets:[{ data:[b,i,a] }]
+        }
+    });
+
+    bar = new Chart(document.getElementById("barChart"), {
+        type:"bar",
+        data:{
+            labels:["Section A","Section B"],
+            datasets:[{
+                label:"Students",
+                data:[secA, secB]
+            }]
+        }
+    });
+}
+
+function render() {
+    renderTable();
+    renderCharts();
+}
+
+render();
+</script>
+
+</body>
+</html>
