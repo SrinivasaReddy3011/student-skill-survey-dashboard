@@ -52,7 +52,7 @@ canvas {
 <body>
 
 <h1>📊 Student Skill Dashboard</h1>
-
+<h3 id="total"></h3>
 <input type="text" id="name" placeholder="Enter Name">
 
 <select id="section">
@@ -80,6 +80,7 @@ canvas {
 
 <canvas id="chart" width="300"></canvas>
 <canvas id="barChart" width="300"></canvas>
+<canvas id="sectionChart" width="300"></canvas>
 <script>
 let data = JSON.parse(localStorage.getItem("students")) || [];
 
@@ -107,7 +108,17 @@ function deleteStudent(index) {
     saveData();
     render();
 }
+function editStudent(index) {
+    let student = data[index];
 
+    document.getElementById("name").value = student.name;
+    document.getElementById("section").value = student.section;
+    document.getElementById("skill").value = student.skill;
+
+    data.splice(index, 1);
+    saveData();
+    render();
+}
 function renderTable() {
     let table = document.getElementById("table");
 
@@ -127,12 +138,17 @@ function renderTable() {
         row.insertCell(0).innerText = d.name;
         row.insertCell(1).innerText = d.section;
         row.insertCell(2).innerText = d.skill;
+        let editBtn = document.createElement("button");
+editBtn.innerText = "Edit";
+editBtn.onclick = () => editStudent(i);
 
-        let btn = document.createElement("button");
-        btn.innerText = "Delete";
-        btn.onclick = () => deleteStudent(i);
+let delBtn = document.createElement("button");
+delBtn.innerText = "Delete";
+delBtn.onclick = () => deleteStudent(i);
 
-        row.insertCell(3).appendChild(btn);
+let actionCell = row.insertCell(3);
+actionCell.appendChild(editBtn);
+actionCell.appendChild(delBtn);
     });
 }
 
@@ -147,17 +163,27 @@ function renderChart() {
     // PIE CHART
     if (chart) chart.destroy();
 
-    chart = new Chart(document.getElementById("chart"), {
-        type: "pie",
-        data: {
-            labels: ["Beginner", "Intermediate", "Advanced"],
-            datasets: [{
-                data: [b, i, a],
-                backgroundColor: ["red", "orange", "green"]
-            }]
+chart = new Chart(document.getElementById("chart"), {
+    type: "pie",
+    data: {
+        labels: ["Beginner", "Intermediate", "Advanced"],
+        datasets: [{
+            data: [b, i, a],
+            backgroundColor: ["red", "orange", "green"]
+        }]
+    },
+    options: {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.label + ": " + context.raw;
+                    }
+                }
+            }
         }
-    });
-
+    }
+});
     // BAR CHART
     new Chart(document.getElementById("barChart"), {
         type: "bar",
@@ -171,11 +197,29 @@ function renderChart() {
         }
     });
 }
+function renderSectionChart() {
+    let a = data.filter(x => x.section === "A").length;
+    let b = data.filter(x => x.section === "B").length;
+
+    new Chart(document.getElementById("sectionChart"), {
+        type: "bar",
+        data: {
+            labels: ["Section A", "Section B"],
+            datasets: [{
+                label: "Students",
+                data: [a, b],
+                backgroundColor: ["blue", "purple"]
+            }]
+        }
+    });
+}
 function render() {
     renderTable();
     renderChart();
+    renderSectionChart();
+    document.getElementById("total").innerText =
+        "Total Students: " + data.length;
 }
-
 function downloadCSV() {
     let csv = "Name,Section,Skill\n";
 
