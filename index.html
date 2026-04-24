@@ -7,7 +7,7 @@
 <style>
 body {
     font-family: Arial;
-    background: #f4f6f9;
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
     text-align: center;
 }
 
@@ -65,7 +65,8 @@ canvas {
 </select>
 
 <button onclick="addStudent()">Add</button>
-
+<button onclick="downloadCSV()">Download Excel</button>
+<input type="text" id="search" placeholder="Search..." onkeyup="searchData()">    
 <table id="table">
 <tr>
 <th>Name</th>
@@ -158,7 +159,34 @@ function render() {
 }
 
 render();
+function downloadCSV() {
+    let csv = "Name,Section,Skill\n";
 
+    data.forEach(d => {
+        csv += ${d.name},${d.section},${d.skill}\n;
+    });
+
+    let blob = new Blob([csv], { type: 'text/csv' });
+    let url = window.URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "students.csv";
+    a.click();
+}
+
+function searchData() {
+    let value = document.getElementById("search").value.toLowerCase();
+
+    let rows = document.querySelectorAll("#table tr");
+
+    rows.forEach((row, index) => {
+        if(index === 0) return;
+
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(value) ? "" : "none";
+    });
+}
 </script>
 
 </body>
