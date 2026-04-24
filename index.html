@@ -90,15 +90,16 @@ function addStudent() {
     let section = document.getElementById("section").value;
     let skill = document.getElementById("skill").value;
 
-    if(name === "") {
+    if (name === "") {
         alert("Enter name");
         return;
     }
-data.push({ name, section, skill });
+
+    data.push({ name, section, skill });
+
     saveData();
     render();
 }
-
 function deleteStudent(index) {
     data.splice(index,1);
     saveData();
