@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
 <title>Student Skill Dashboard</title>
@@ -67,7 +67,7 @@ canvas {
 </select>
 
 <button onclick="addStudent()">Add</button>
-<!-- <button onclick="downloadCSV()">Download Excel</button> -->
+<button onclick="downloadCSV()">Download Excel</button>
 <input type="text" id="search" placeholder="Search..." onkeyup="searchData()">    
 <table id="table">
 <tr>
@@ -108,7 +108,7 @@ function deleteStudent(index) {
     saveData();
     render();
 }
-/*
+
 function editStudent(index) {
     let student = data[index];
 
@@ -120,7 +120,7 @@ function editStudent(index) {
     saveData();
     render();
 }
-*/
+
 function renderTable() {
     let table = document.getElementById("table");
 
@@ -140,16 +140,16 @@ function renderTable() {
         row.insertCell(0).innerText = d.name;
         row.insertCell(1).innerText = d.section;
         row.insertCell(2).innerText = d.skill;
-        //let editBtn = document.createElement("button");
-//editBtn.innerText = "Edit";
-//editBtn.onclick = () => editStudent(i);
+        let editBtn = document.createElement("button");
+editBtn.innerText = "Edit";
+editBtn.onclick = () => editStudent(i);
 
 let delBtn = document.createElement("button");
 delBtn.innerText = "Delete";
 delBtn.onclick = () => deleteStudent(i);
 
 let actionCell = row.insertCell(3);
-//actionCell.appendChild(editBtn);
+actionCell.appendChild(editBtn);
 actionCell.appendChild(delBtn);
     });
 }
@@ -222,7 +222,7 @@ function render() {
     document.getElementById("total").innerText =
         "Total Students: " + data.length;
 }
-/*
+
 function downloadCSV() {
     let csv = "Name,Section,Skill\n";
 
@@ -238,7 +238,7 @@ function downloadCSV() {
     a.download = "students.csv";
     a.click();
 }
-*/
+
 function searchData() {
     let value = document.getElementById("search").value.toLowerCase();
     let rows = document.querySelectorAll("#table tr");
